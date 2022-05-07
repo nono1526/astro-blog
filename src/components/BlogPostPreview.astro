@@ -1,4 +1,6 @@
 ---
+import DateView from './DateView.astro';
+
 export interface Props {
 	post: any;
 }
@@ -8,11 +10,12 @@ const { post } = Astro.props;
 
 <article class="post-preview">
 	<header>
-		<p class="publish-date">{post.frontmatter.publishDate}</p>
 		<a href={post.url}><h1 class="title">{post.frontmatter.title}</h1></a>
 	</header>
-	<p>{post.frontmatter.description}</p>
+	<p class="mb-4">{post.frontmatter.description}</p>
 	<a href={post.url}>Read more</a>
+  <DateView date={post.frontmatter.publishDate}></DateView>
+
 </article>
 
 <style>

@@ -6,7 +6,7 @@ setup: |
 tags:
   - js
   - vue
-date: 2021-05-06
+publishDate: 2021-05-06
 author: Nono
 description: 從 Vue 的原始碼中探討 Vue 是如何做到資料響應式這個功能的，並且做一個簡易的版本
 cover: https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png
