@@ -112,51 +112,9 @@ declare module 'astro:content' {
 
 	const entryMap: {
 		"blog": {
-"2019-04-17-career-start.md": {
-  id: "2019-04-17-career-start.md",
-  slug: "2019-04-17-career-start",
-  body: string,
-  collection: "blog",
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] },
-"2019-10-15-vuepress-tutorial-basic.md": {
-  id: "2019-10-15-vuepress-tutorial-basic.md",
-  slug: "2019-10-15-vuepress-tutorial-basic",
-  body: string,
-  collection: "blog",
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] },
-"2019-10-29-vue-sourcecode-prototype.md": {
-  id: "2019-10-29-vue-sourcecode-prototype.md",
-  slug: "2019-10-29-vue-sourcecode-prototype",
-  body: string,
-  collection: "blog",
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] },
-"2020-03-09-javascript-is-plain-object.md": {
-  id: "2020-03-09-javascript-is-plain-object.md",
-  slug: "2020-03-09-javascript-is-plain-object",
-  body: string,
-  collection: "blog",
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] },
-"2020-05-06-learning-vue-reactivity.md": {
-  id: "2020-05-06-learning-vue-reactivity.md",
-  slug: "2020-05-06-learning-vue-reactivity",
-  body: string,
-  collection: "blog",
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] },
-"2021-04-27-why-my-timer-delay.md": {
-  id: "2021-04-27-why-my-timer-delay.md",
-  slug: "2021-04-27-why-my-timer-delay",
-  body: string,
-  collection: "blog",
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] },
-"2021-06-01-promise-a-plus-translate.md": {
-  id: "2021-06-01-promise-a-plus-translate.md",
-  slug: "2021-06-01-promise-a-plus-translate",
+"career-start.md": {
+  id: "career-start.md",
+  slug: "career-start",
   body: string,
   collection: "blog",
   data: InferEntrySchema<"blog">
