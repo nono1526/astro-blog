@@ -1,11 +1,8 @@
 ---
-title: '[深入了解 Vue] 學習 Vue2 響應式原理，並實作簡易版本'
-setup: |
-  import Layout from '../../layouts/BlogPost.astro'
-  import Cool from '../../components/Author.astro'
+title: "[深入了解 Vue] 學習 Vue2 響應式原理，並實作簡易版本"
 tags:
-  - js
-  - vue
+  - "js"
+  - "vue"
 publishDate: 2021-05-06
 author: Nono
 description: 從 Vue 的原始碼中探討 Vue 是如何做到資料響應式這個功能的，並且做一個簡易的版本
@@ -24,13 +21,13 @@ Vue.js 資料響應式這個部分，Vue 3 是使用 `Proxy` 來實作，而 Vue
 
 ```javascript
 const component = new Vue({
-	template: `
+  template: `
 		<div>{{ name }}</div>
 	`,
   data: {
-		name: 'Nono'
-	}
-})
+    name: "Nono",
+  },
+});
 ```
 
 當我們改變 [`component.name`](http://component.name) 時，會讓 template 中的 `{{ name }}` 被改變。
@@ -73,15 +70,15 @@ const component = new Vue({
 
 ```javascript
 Object.defineProperty(obj, key, {
-	enumerable: true,
+  enumerable: true,
   configurable: true,
-	get () {
-		return val
-	},
-	set (newVal) {
-		val = newVal
-	}
-})
+  get() {
+    return val;
+  },
+  set(newVal) {
+    val = newVal;
+  },
+});
 ```
 
 你看到這邊應該想說，這樣不就和一般 object get、set 一樣嗎？
@@ -94,23 +91,24 @@ Object.defineProperty(obj, key, {
 
 ```javascript
 Object.defineProperty(obj, key, {
-	enumerable: true,
+  enumerable: true,
   configurable: true,
-	get () {
-		// 這裡先把之後有人要更改我值要做的事情存起來，可能就是某些函數
-		// 可能有哪些事？
-		// 重繪畫面 (render)
+  get() {
+    // 這裡先把之後有人要更改我值要做的事情存起來，可能就是某些函數
+    // 可能有哪些事？
+    // 重繪畫面 (render)
     // 利用這個新值做某些事情 (watch, computed)
-		return val
-	},
-	set (newVal) {
-		val = newVal
-		// 這裡依據新的值，執行剛剛儲存起來的函數 (render, watch, computed)
-	}
-})
+    return val;
+  },
+  set(newVal) {
+    val = newVal;
+    // 這裡依據新的值，執行剛剛儲存起來的函數 (render, watch, computed)
+  },
+});
 ```
 
 ### dep.js - Dep
+
 `src/core/observer/dep.js`  
 Dep 就是一個觀察者模式中的訂閱者，裡面可以註冊多個 subs (發佈者)，我先把 vue 裡面實作先簡化成以下這樣。
 
@@ -118,21 +116,21 @@ Dep 就是一個觀察者模式中的訂閱者，裡面可以註冊多個 subs (
 
 ```javascript
 class Dep {
-	static target // 需要儲存目前 target 的 sub
-	constructor () {
-		this.subs = [] // 可註冊多個事件
-	}
-	addSub (sub) {
-		// 新增 sub	
-		this.subs.push(sub)
-	}
-	notify () {
-		// 更新所有 sub
-		const subs = this.subs.slice()
-		for (let i = 0, l = subs.length; i < l; i++) {
-      subs[i].update()
+  static target; // 需要儲存目前 target 的 sub
+  constructor() {
+    this.subs = []; // 可註冊多個事件
+  }
+  addSub(sub) {
+    // 新增 sub
+    this.subs.push(sub);
+  }
+  notify() {
+    // 更新所有 sub
+    const subs = this.subs.slice();
+    for (let i = 0, l = subs.length; i < l; i++) {
+      subs[i].update();
     }
-	}
+  }
 }
 ```
 
@@ -140,10 +138,10 @@ class Dep {
 
 ```javascript
 class Watcher {
-	constructor (key, callback) {
-		this.update = callback
-		this.key = key
-	}
+  constructor(key, callback) {
+    this.update = callback;
+    this.key = key;
+  }
 }
 ```
 
@@ -160,7 +158,7 @@ function defineReactive (obj, key, val) {
 			if (Dep.target) {
 				dep.addSubs(Dep.target)
 			}
-			
+
 			return val
 		},
 		set (newVal) {
@@ -178,47 +176,46 @@ function defineReactive (obj, key, val) {
 
 看到這裡你應該會想知道 [Dep.target](http://dep.target) 到底從哪裡被設值的，這邊 Vue 是有更複雜一點的設計，來應付 watch、computed、render template 的依賴。這邊我們只是想先瞭解怎麼去 render template 的，所以就先簡單寫一個 `render template` 的 function 當作 `sub` 的 watcher，並且試著讓他能夠依據 data 的改變被追蹤。
 
-再來就是你會發現每個透過  `defineReactive` 都會產生閉包，每個閉包裡有自己的 dep instance。
+再來就是你會發現每個透過 `defineReactive` 都會產生閉包，每個閉包裡有自己的 dep instance。
 
 這邊我們就簡單舉例：Dep.target 是會更新畫面的依賴，程式碼可能是像這樣如下。
 
 ```javascript
 // render 畫面
-function updateTemplate (key) {
-  const div = document.createElement('div')
-  div.innerHTML = this[key]
-  console.log('render')
-  el.appendChild(div)
+function updateTemplate(key) {
+  const div = document.createElement("div");
+  div.innerHTML = this[key];
+  console.log("render");
+  el.appendChild(div);
 }
 
-defineProperty(obj, key, val)
-const renderWatcher = new Watcher(key, updateTemplate) // 想像這是一個會重繪畫面的 watcher
-Dep.target = renderWatcher // 這裡指定了正處理的 Dep
-data[key] // 這裡是為了觸發 data[key] 的 getter 來收集依賴
-Dep.target = null // 做完了把 Dep.target 清掉
+defineProperty(obj, key, val);
+const renderWatcher = new Watcher(key, updateTemplate); // 想像這是一個會重繪畫面的 watcher
+Dep.target = renderWatcher; // 這裡指定了正處理的 Dep
+data[key]; // 這裡是為了觸發 data[key] 的 getter 來收集依賴
+Dep.target = null; // 做完了把 Dep.target 清掉
 ```
 
 上面其實也可以把 `data[key]` 直接改成呼叫 updateTemplate，因為 updateTemplate 中也會去觸發 `data[key]` 的 getter。
 
 ```javascript
-
 // render 畫面
-function updateTemplate (key) {
-  const div = document.createElement('div')
-  div.innerHTML = this[key]
-  console.log('render')
-  el.appendChild(div)
+function updateTemplate(key) {
+  const div = document.createElement("div");
+  div.innerHTML = this[key];
+  console.log("render");
+  el.appendChild(div);
 }
 
 // 對依賴進行追蹤
-defineProperty(data, 'name', data['name'])
-const renderWatcher = new Watcher('name', updateTemplate)
+defineProperty(data, "name", data["name"]);
+const renderWatcher = new Watcher("name", updateTemplate);
 
-Dep.target = renderWatcher
+Dep.target = renderWatcher;
 
 // 這裡會剛好觸發 getter
-updateTemplate.call(data, 'name')
-Dep.target = null // 避免之後每次 getter 都收集依賴
+updateTemplate.call(data, "name");
+Dep.target = null; // 避免之後每次 getter 都收集依賴
 // 結束
 ```
 
@@ -228,79 +225,79 @@ Dep.target = null // 避免之後每次 getter 都收集依賴
 
 ```javascript
 const data = {
-  name: 'Nono'
-}
+  name: "Nono",
+};
 
-const el = document.querySelector('#app')
+const el = document.querySelector("#app");
 
 // render 畫面
-function updateTemplate (key) {
-  const div = document.createElement('div')
-  div.innerHTML = this[key]
-  console.log('render')
-  el.appendChild(div)
+function updateTemplate(key) {
+  const div = document.createElement("div");
+  div.innerHTML = this[key];
+  console.log("render");
+  el.appendChild(div);
 }
 
-function defineProperty (obj, key, val) {
-  const dep = new Dep()
-  
+function defineProperty(obj, key, val) {
+  const dep = new Dep();
+
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    get () {
-      console.log('getter')
-      
+    get() {
+      console.log("getter");
+
       if (Dep.target) {
-        dep.addSubs(Dep.target)
+        dep.addSubs(Dep.target);
       }
-      return val
+      return val;
     },
-    set (newVal) {
-      val = newVal
-      dep.notify()
-    }
-  })
+    set(newVal) {
+      val = newVal;
+      dep.notify();
+    },
+  });
 }
 
 class Dep {
-  static target
-  constructor () {
-    this.subs = []
+  static target;
+  constructor() {
+    this.subs = [];
   }
-  addSubs (sub) {
-    this.subs.push(sub)
+  addSubs(sub) {
+    this.subs.push(sub);
   }
-  notify () {
-    const subs = this.subs.slice()
+  notify() {
+    const subs = this.subs.slice();
     for (let i = 0, l = subs.length; i < l; i++) {
-      console.log('notify')
-      subs[i].update()
+      console.log("notify");
+      subs[i].update();
     }
   }
 }
 
 class Watcher {
-  constructor (key, callback) {
-    this.update = callback.bind(data, key)
-    this.key = key
+  constructor(key, callback) {
+    this.update = callback.bind(data, key);
+    this.key = key;
   }
 }
 
 // 對依賴進行追蹤
-defineProperty(data, 'name', data['name'])
-const renderWatcher = new Watcher('name', updateTemplate)
+defineProperty(data, "name", data["name"]);
+const renderWatcher = new Watcher("name", updateTemplate);
 
-Dep.target = renderWatcher
+Dep.target = renderWatcher;
 
-console.log('這裡會剛好觸發 getter')
+console.log("這裡會剛好觸發 getter");
 // 這裡會剛好觸發 getter
-updateTemplate.call(data, 'name')
-Dep.target = null // 避免之後每次 getter 都收集依賴
+updateTemplate.call(data, "name");
+Dep.target = null; // 避免之後每次 getter 都收集依賴
 // 結束
 
 // 試著去修改 data.name 看看畫面有沒有增加
-data.name = 'Dica'
-data.name = 'Cindy'
+data.name = "Dica";
+data.name = "Cindy";
 ```
 
 [https://codepen.io/nono1526/pen/gOmOXNW](https://codepen.io/nono1526/pen/gOmOXNW)

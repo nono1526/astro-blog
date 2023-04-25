@@ -1,16 +1,12 @@
 ---
-title: 'Promise A+ 規範文件繁中翻譯'
-setup: |
-  import Layout from '../../layouts/BlogPost.astro'
-  import Cool from '../../components/Author.astro'
+title: Promise A+ 規範文件繁中翻譯
 tags:
-  - js
+  - "js"
 publishDate: 2021-06-01
 description: Promise A+ 規範文件繁中翻譯
 cover: https://i.imgur.com/gVg6XN6.png
 heroImage: https://i.imgur.com/gVg6XN6.png
 ---
-
 
 原文連結：[Promises/A+](https://promisesaplus.com/)
 
@@ -28,7 +24,7 @@ Promise 最後表示一個非同步的操作。主要透過 `then` 這個 method
 
 1. "promise" 是一個物件或函數且有一個 `then` 方法，且行為符合此規範。
 2. "thenable" 是一個物件或函數來定義 `then` 方法
-3. "value" 是一個合法的 JS 值 (包含 `undefined`a thenable, or a promise) 
+3. "value" 是一個合法的 JS 值 (包含 `undefined`a thenable, or a promise)
 4. "exception" 是一個使用 `throw` 拋出的值
 5. "reason" 是一個用來表示 promise 為何被拒絕的值
 
@@ -70,7 +66,7 @@ promise 的 `then` 方法接受兩個參數：
 
 2.2.2 若 `onFulfilled` 是 function
 
- 2.2.2.1 他在 promise  狀態變更為 fulfilled 時，必須要以 promise 的 value 為第一個參數呼叫
+2.2.2.1 他在 promise 狀態變更為 fulfilled 時，必須要以 promise 的 value 為第一個參數呼叫
 
 2.2.2.2 在 promise 狀態變更為 fulfilled 之前不能被呼叫
 
@@ -78,7 +74,7 @@ promise 的 `then` 方法接受兩個參數：
 
 2.2.3 若 `onRejected` 是 function
 
-2.2.3.1 他在 promise  狀態變更為 rejected 時，必須要以 promise 的 reason 為第一個參數呼叫
+2.2.3.1 他在 promise 狀態變更為 rejected 時，必須要以 promise 的 reason 為第一個參數呼叫
 
 2.2.2.2 在 promise 狀態變更為 rejected 之前不能被呼叫
 
@@ -124,13 +120,13 @@ Promise 解決程序是一個抽象操作，說明將一個 promise 和 value �
 
 2.3.3 若 y 狀態為 rejected，用同樣的 reason 完成 promise
 
-2.3.3 反之，若 x 是一個物件或  function
+2.3.3 反之，若 x 是一個物件或 function
 
 2.3.3.1 使 then 為 x.then [3.5]
 
-2.3.3.2 若取得 x.then 時發生錯誤，使用 `e` 作為 reason 拒絕 promise 
+2.3.3.2 若取得 x.then 時發生錯誤，使用 `e` 作為 reason 拒絕 promise
 
-2.3.3.3 若 then 是 function, 將 x 作為  this.呼叫。第一個參數為 resolvePromise 第二個參數為 rejectPromise。
+2.3.3.3 若 then 是 function, 將 x 作為 this.呼叫。第一個參數為 resolvePromise 第二個參數為 rejectPromise。
 
 2.3.3.3.1 若 resolvePromise 被使用 y 呼叫，執行 [[Resolve]](promise, y)
 
@@ -158,7 +154,7 @@ Promise 解決程序是一個抽象操作，說明將一個 promise 和 value �
 
 Generally, it will only be known that x is a true promise if it comes from the current implementation. This clause allows the use of implementation-specific means to adopt the state of known-conformant promises.(原文)
 
-3.5.  在程序的開始會將儲存 `x.then` 的 參照，然後測試他的參照，最後呼叫他的參照，避免多次使用 `x.then` 參數。這些預防措施確保很重要，保證使用的參數的一致性。參數可能被檢索中改變。
+3.5. 在程序的開始會將儲存 `x.then` 的 參照，然後測試他的參照，最後呼叫他的參照，避免多次使用 `x.then` 參數。這些預防措施確保很重要，保證使用的參數的一致性。參數可能被檢索中改變。
 
 3.6. 實作不能對 thenable 鏈的深度做隨意的限制。假設在遞迴上給隨意的限制將會是無窮遞迴。只有在出現無窮循環時送出 `TypeError` ，若真的遇到 thenable 無限練，那永遠遞迴是正確的行為。
 
